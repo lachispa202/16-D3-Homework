@@ -8,7 +8,7 @@ var svgHeight = 660;
 var chartMargin = {
     top: 20,
     right: 40,
-    bottom: 180,
+    bottom: 80,
     left: 100
 };
 
@@ -45,8 +45,8 @@ d3.csv("assets/data/data.csv").then(function (estimateACS) {
     });
 
     // Configure a linear scale with a range between the chart width and 0 (X-axis)
-    var xLinearScale = d3.scaleTime()
-        .domain([0, d3.max(estimateACS, data => data.poverty)])
+    var xLinearScale = d3.scaleLinear()
+        .domain([d3.min(estimateACS, data => data.poverty * 0.8), d3.max(estimateACS, data => data.poverty * 1.2)])
         .range([0, chartWidth]);
 
     // Configure a linear scale with a range between the chartHeight and 0 (Y-axis)
@@ -60,9 +60,9 @@ d3.csv("assets/data/data.csv").then(function (estimateACS) {
     var leftAxis = d3.axisLeft(yLinearScale);
 
     // Append x-axis
-    var xAxis = chartGroup.append("g")
+    chartGroup.append("g")
         .classed("x-axis", true)
-        .attr("transform", `translate(0, ${svgHeight})`)
+        .attr("transform", `translate(0, ${chartHeight})`)
         .call(bottomAxis);
 
     // Append y-axis
@@ -96,7 +96,7 @@ d3.csv("assets/data/data.csv").then(function (estimateACS) {
 
     //Create a group for X labels
     var xLabelsGroup = chartGroup.append('g')
-        .attr('transform', `translate(${svgWidth / 2}, ${svgHeight + 10 + chartMargin.top})`);
+        .attr('transform', `translate(${svgWidth / 2}, ${chartHeight + 10 + chartMargin.top})`);
 
     var povertyLabel = xLabelsGroup.append('text')
         .classed('aText', true)
@@ -108,7 +108,7 @@ d3.csv("assets/data/data.csv").then(function (estimateACS) {
 
     //Create a group for Y labels
     var yLabelsGroup = chartGroup.append('g')
-        .attr('transform', `translate(${0 - chartMargin.left / 2}, ${svgHeight / 2})`);
+        .attr('transform', `translate(${0 - chartMargin.left / 2}, ${chartHeight / 2})`);
 
     var healthcareLabel = yLabelsGroup.append('text')
         .classed('aText', true)
@@ -120,10 +120,5 @@ d3.csv("assets/data/data.csv").then(function (estimateACS) {
         .attr('value', 'healthcare')
         .text('Without Healthcare (%)');
 
-
-
-
-
-
-})
+});
 
